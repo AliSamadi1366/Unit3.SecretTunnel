@@ -11,7 +11,7 @@ export function AuthProvider({ children }) {
   // TODO: signup
   async function signup() {
     try {
-      const response = await fetch(API, {
+      const response = await fetch(`${API}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -22,31 +22,37 @@ export function AuthProvider({ children }) {
         }),
       });
       const result = await response.json();
-      return result.token;
-      setToken(result.token);
-      setLocation("TABLET");
+      if (response.ok) {
+        setToken(result.token);
+        setLocation("TABLET");
+      } else {
+        console.error("signup failed:", result);
+      }
     } catch (e) {
-      console.error("oh no ;(");
+      console.error("oh no ;(", e);
     }
   }
 
   // TODO: authenticate
   async function authenticate(token) {
     try {
-      const response = await fetch(API, {
+      const response = await fetch(`${API}/authenticate`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       const result = await response.json();
-      return result;
-      setLocation("TUNNEL");
+      if (response.ok) {
+        setLocation("TUNNEL");
+      } else {
+        console.error("Authentication failed:", result);
+      }
     } catch (e) {
       console.error(e);
     }
   }
-  const value = { location, token , signup , authenticate};
+  const value = { location, token, signup, authenticate };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
