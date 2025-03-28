@@ -9,50 +9,39 @@ export function AuthProvider({ children }) {
   const [location, setLocation] = useState("GATE");
 
   // TODO: signup
-  async function signup() {
+  const signup = async (credentials) => {
     try {
-      const response = await fetch(`${API}/signup`, {
+      const response = await fetch(API + "/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          username: "AliSamadi",
-          password: "Gholi27096",
-        }),
+        body: JSON.stringify(credentials),
       });
       const result = await response.json();
-      if (response.ok) {
-        setToken(result.token);
-        setLocation("TABLET");
-      } else {
-        console.error("signup failed:", result);
-      }
+      setToken(result.token);
+      setLocation("TABLET");
     } catch (e) {
       console.error("oh no ;(", e);
     }
-  }
+  };
 
   // TODO: authenticate
-  async function authenticate(token) {
+  const authenticate = async () => {
     try {
-      const response = await fetch(`${API}/authenticate`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await fetch(API + "/authenticate", {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      const result = await response.json();
       if (response.ok) {
         setLocation("TUNNEL");
       } else {
-        console.error("Authentication failed:", result);
+        console.error("Authentication failed:");
       }
     } catch (e) {
       console.error(e);
     }
-  }
-  const value = { location, token, signup, authenticate };
+  };
+  const value = { location, signup, authenticate };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
