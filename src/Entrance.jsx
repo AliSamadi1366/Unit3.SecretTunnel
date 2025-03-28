@@ -5,8 +5,8 @@ export default function Entrance() {
   // TODO: call signup when form is submitted
   const { signup } = useAuth();
   const signUp = (formData) => {
-    const username = formData.get("name");
-    signup(username);
+    const name = formData.get("name");
+    signup({ username: name });
   };
   return (
     <>
