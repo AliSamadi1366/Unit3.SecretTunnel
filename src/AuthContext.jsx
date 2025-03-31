@@ -29,6 +29,7 @@ export function AuthProvider({ children }) {
   // TODO: authenticate
   const authenticate = async () => {
     try {
+      if (!token) throw Error("No token found.");
       const response = await fetch(API + "/authenticate", {
         headers: { Authorization: `Bearer ${token}` },
       });
